@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3'
+    }
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/PraveenSathelli/demo-spring-jenkins.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+
+    post {
+
+        always {
+            echo 'This runs always (success/failure/unstable)'
+        }
+
+        success {
+            echo 'Build SUCCESS'
+        }
+
+        failure {
+            echo 'Build FAILED'
+        }
+
+        unstable {
+            echo 'Build is UNSTABLE (test failures, etc.)'
+        }
+
+        changed {
+            echo 'Build status CHANGED compared to previous build '
+        }
+    }
+}
